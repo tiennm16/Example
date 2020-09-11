@@ -8,13 +8,15 @@ import {
   EpicMiddleware,
 } from 'redux-observable';
 
-import {mergeMap, catchError} from 'rxjs/operators';
+import {mergeMap, catchError, tap} from 'rxjs/operators';
 import {RootEpicDependency, RootEpic, RootStoreState} from './types';
 
 export function createEpicManager(
   dependencies: RootEpicDependency = {},
   ...epics: Epic[]
 ): {
+  addEpic: (epic: Epic) => void;
+  epic$: BehaviorSubject<Epic>;
   rootEpic: RootEpic;
   epicMiddleware: EpicMiddleware<
     Action,
@@ -23,12 +25,24 @@ export function createEpicManager(
     RootEpicDependency
   >;
 } {
+  const addedEpics: Epic[] = [];
   const epic$ = new BehaviorSubject(combineEpics(...epics));
+  const addEpic = (epic: Epic) => {
+    if (addedEpics.includes(epic)) {
+      return;
+    }
+    addedEpics.push(epic);
+    epic$.next(epic);
+  };
   const rootEpic: Epic = (action$, state$) =>
     epic$.pipe(
       mergeMap((epic) =>
         epic(action$, state$, dependencies).pipe(
-          catchError((_, source) => source),
+          // tap((x) => console.warn(x?.type)),
+          catchError((err, source) => {
+            console.warn(err);
+            return source;
+          }),
         ),
       ),
     );
@@ -39,5 +53,5 @@ export function createEpicManager(
     RootStoreState,
     RootEpicDependency
   >();
-  return {rootEpic, epicMiddleware};
+  return {epic$, rootEpic, epicMiddleware, addEpic};
 }

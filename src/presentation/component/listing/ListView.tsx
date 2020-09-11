@@ -9,6 +9,7 @@ export interface ListViewProps<ItemT> extends FlatListProps<ItemT> {
   onRefresh?: () => void;
   emptyListViewProps?: EmptyListViewProps;
   isLoadingMore?: boolean;
+  onLoadMore?: () => void;
   LoadingComponent?: React.ComponentType<any> | React.ReactElement | null;
 }
 
@@ -20,6 +21,7 @@ export const ListView: ListViewFC = (props) => {
     ListFooterComponent,
     data,
     isLoadingMore,
+    onLoadMore,
     LoadingComponent,
   } = props;
 
@@ -28,6 +30,13 @@ export const ListView: ListViewFC = (props) => {
 
   const skeletonDisplayable =
     (refreshing && data?.length === 0) || isLoadingMore;
+
+  const onEndReached = React.useCallback(() => {
+    if (!onLoadMore || isLoadingMore) {
+      return;
+    }
+    onLoadMore();
+  }, [isLoadingMore, onLoadMore]);
 
   const emptyItem = () => {
     if (refreshing) {
@@ -65,6 +74,7 @@ export const ListView: ListViewFC = (props) => {
           />
         }
         style={styles.list}
+        onEndReached={onEndReached}
       />
     </View>
   );
