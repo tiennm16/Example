@@ -3,15 +3,25 @@ import {
   KeyChainAuthenticationDataSource,
   ApiAuthenticationDataSource,
   CombineAuthenticationRepository,
+  UnsplashRepository,
+  ApiUnsplashDataSource,
+  AsyncStorageUnsplashDataSource,
 } from '@data';
 import {SignInUseCase} from '@domain';
-import {BearerAuthorizationRxAxiosProvider, BuildConfig} from '@core';
+import {
+  BearerAuthorizationRxAxiosProvider,
+  BuildConfig,
+  RxUnsplashProvider,
+} from '@core';
 
 export function registerDatDependencies() {
   container.register('ApiProvider', {
     useValue: new BearerAuthorizationRxAxiosProvider({
       baseURL: BuildConfig.ApiUrl,
     }),
+  });
+  container.register('UnsplashApiProvider', {
+    useValue: new RxUnsplashProvider(BuildConfig.UNSPLASH_KEY),
   });
   container.register('LocalAuthenticationDataSource', {
     useClass: KeyChainAuthenticationDataSource,
@@ -21,8 +31,20 @@ export function registerDatDependencies() {
     useClass: ApiAuthenticationDataSource,
   });
 
+  container.register('RemoteUnsplashDataSource', {
+    useClass: ApiUnsplashDataSource,
+  });
+
+  container.register('LocalUnsplashDataSource', {
+    useClass: AsyncStorageUnsplashDataSource,
+  });
+
   container.register('AuthenticationRepository', {
     useClass: CombineAuthenticationRepository,
+  });
+
+  container.register('UnsplashRepository', {
+    useClass: UnsplashRepository,
   });
 
   container.register('SignInUseCase', {

@@ -1,24 +1,19 @@
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp } from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RouteProp} from '@react-navigation/native';
 
-import { AuthorizedStoryboardParamList } from '@storyboards';
+import {AuthorizedStoryboardParamList} from '@storyboards';
+import {HomeState} from './redux';
 
 export type HomeNavigationProps = StackNavigationProp<
-    AuthorizedStoryboardParamList,
-    'Home'
+  AuthorizedStoryboardParamList,
+  'Home'
 >;
 
-export type HomeRouteProp = RouteProp<
-    AuthorizedStoryboardParamList,
-    'Home'
->;
+export type HomeRouteProp = RouteProp<AuthorizedStoryboardParamList, 'Home'>;
 
 export type HomeProps = {
-    navigation: HomeNavigationProps;
-    route: HomeRouteProp;
+  navigation: HomeNavigationProps;
+  route: HomeRouteProp;
 };
 
-
-
-export type HomeReduxSelectionState = {
-};
+export type HomeReduxSelectionState = HomeState;

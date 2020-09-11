@@ -1,12 +1,13 @@
-import { Selector } from 'react-redux';
-import { RootStoreState } from '@shared-state';
-import { HomeReduxSelectionState } from './types';
+import {Selector} from 'react-redux';
+import {RootStoreState} from '@shared-state';
+import {HomeReduxSelectionState} from './types';
+import {HomeState, INITIAL_STATE} from './home.slice';
+
+export type StoreStateWithHome = RootStoreState & {
+  home?: HomeState;
+};
 
 export const homeSelector: Selector<
-    RootStoreState,
-    HomeReduxSelectionState
-> = (state) => {
-    return {
-        isAuthenticating: state.authentication.isAuthenticating,
-    };
-};
+  StoreStateWithHome,
+  HomeReduxSelectionState
+> = ({home = INITIAL_STATE}) => home;
