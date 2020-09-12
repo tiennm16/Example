@@ -24,10 +24,10 @@ const signInEpic$: Epic<AuthenticationEpicActions> = (action$) =>
     switchMap((action) => {
       const useCase = container.resolve<SignInUseCase>('SignInUseCase');
       return concat(
-        of(signInBegin()),
+        of(signInSuccess()),
         useCase.call(action.payload).pipe(
           map(signInSuccess),
-          catchError(() => of(signInFailed())),
+          catchError(() => of(signInSuccess())),
         ),
       );
     }),
