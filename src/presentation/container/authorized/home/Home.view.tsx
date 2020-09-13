@@ -61,8 +61,7 @@ const _Home: React.FC<HomeProps> = (props) => {
             <UnsplashLoadingItem />
           </>
         }
-        maxToRenderPerBatch={5}
-        removeClippedSubviews
+        windowSize={11}
       />
     </SafeAreaView>
   );
