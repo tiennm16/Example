@@ -1,3 +1,4 @@
+import {signOut} from '@shared-state';
 import React from 'react';
 import {} from 'react-native';
 
@@ -21,6 +22,10 @@ export function useHomeModel() {
   >(homeSelector);
   const dispatch = useDispatch();
 
+  const doSignOut = React.useCallback(() => {
+    dispatch(signOut());
+  }, [dispatch]);
+
   const doRefresh = React.useCallback(() => {
     dispatch(refresh());
   }, [dispatch]);
@@ -33,5 +38,5 @@ export function useHomeModel() {
     doRefresh();
   }, [doRefresh]);
 
-  return {doRefresh, data, refreshing, doLoadMore, loadingMore};
+  return {data, refreshing, loadingMore, doLoadMore, doRefresh, doSignOut};
 }

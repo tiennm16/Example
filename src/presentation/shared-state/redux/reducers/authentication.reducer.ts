@@ -6,6 +6,7 @@ import {
   signInLocally,
   signInLocallySuccess,
   signInLocallyFailed,
+  signOutSuccess,
 } from '../actions';
 
 export type AuthenticationState = {
@@ -45,6 +46,11 @@ export const authenticationReducer = createReducer(INITIAL_STATE, (builder) =>
     .addCase(signInLocallyFailed, (state) =>
       Object.assign(state, {
         isAuthenticatingLocally: false,
+        isAuthorized: false,
+      }),
+    )
+    .addCase(signOutSuccess, (state) =>
+      Object.assign(state, {
         isAuthorized: false,
       }),
     ),

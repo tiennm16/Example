@@ -14,20 +14,6 @@ export const signInLocallyFailed = createAction(
   'authentication/signInLocallyFailed',
 );
 
-export type SignInAction = ReturnType<typeof signIn>;
-export type SignInBegin = ReturnType<typeof signInBegin>;
-export type SignInSuccess = ReturnType<typeof signInSuccess>;
-export type SignInFailed = ReturnType<typeof signInFailed>;
-
-export type SignInLocally = ReturnType<typeof signInLocally>;
-export type SignInLocallySuccess = ReturnType<typeof signInLocallySuccess>;
-export type SignInLocallyFailed = ReturnType<typeof signInLocallyFailed>;
-
-export type AuthenticationEpicActions =
-  | SignInAction
-  | SignInBegin
-  | SignInSuccess
-  | SignInFailed
-  | SignInLocally
-  | SignInLocallySuccess
-  | SignInLocallyFailed;
+export const signOut = createAction('authentication/signOut');
+export const signOutFailed = createAction('authentication/signOutFailed');
+export const signOutSuccess = createAction('authentication/signOutSuccess');

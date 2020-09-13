@@ -25,9 +25,12 @@ exports[`renders correctly 1`] = `
 >
   <Text
     style={
-      Object {
-        "fontWeight": "600",
-      }
+      Array [
+        Object {
+          "fontWeight": "600",
+        },
+        undefined,
+      ]
     }
   />
   <View

@@ -28,22 +28,18 @@ const {
   },
 } = homeSlice;
 
-const refreshEpic$: Epic<Action, Action, {home: HomeState}> = (
-  action$,
-  state$,
-) =>
+const refreshEpic$: Epic<Action, Action, {home: HomeState}> = (action$) =>
   action$.pipe(
     filter(refresh.match),
     switchMap(() => {
       const repo = container.resolve<UnsplashRepository>('UnsplashRepository');
       return repo.getPhotos().pipe(
-        filter(
-          (data) =>
-            data.length <= 0 ||
-            !compareData(data, state$.value.home?.data[0]?.data),
-        ),
+        filter((data) => data.length > 0),
         map(refreshSuccess),
-        catchError(() => of(refreshFailed())),
+        catchError((err) => {
+          console.warn(err);
+          return of(refreshFailed());
+        }),
       );
     }),
   );
