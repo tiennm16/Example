@@ -6,13 +6,13 @@ import {
   catchError,
   skipWhile,
   mergeMap,
-  takeWhile,
+  throttle,
 } from 'rxjs/operators';
+import {of, concat, timer} from 'rxjs';
 
 import {homeSlice} from './home.slice';
 import {container} from 'tsyringe';
-import {UnsplashRepository} from '@data';
-import {of, concat} from 'rxjs';
+import {UnsplashPhoto, UnsplashRepository} from '@data';
 import {Action} from 'redux';
 import {HomeState} from './types';
 
@@ -28,13 +28,20 @@ const {
   },
 } = homeSlice;
 
-const refreshEpic$: Epic = (action$) =>
+const refreshEpic$: Epic<Action, Action, {home: HomeState}> = (
+  action$,
+  state$,
+) =>
   action$.pipe(
     filter(refresh.match),
     switchMap(() => {
       const repo = container.resolve<UnsplashRepository>('UnsplashRepository');
       return repo.getPhotos().pipe(
-        skipWhile((data) => data.length <= 0),
+        filter(
+          (data) =>
+            data.length <= 0 ||
+            !compareData(data, state$.value.home?.data[0]?.data),
+        ),
         map(refreshSuccess),
         catchError(() => of(refreshFailed())),
       );
@@ -46,6 +53,7 @@ const loadMoreEpic$: Epic<Action, Action, {home: HomeState}> = (
   state$,
 ) =>
   action$.pipe(
+    throttle(() => timer(300)),
     skipWhile(() => state$.value.home?.loadingMore),
     filter(loadMore.match),
     mergeMap(() => {
@@ -54,10 +62,9 @@ const loadMoreEpic$: Epic<Action, Action, {home: HomeState}> = (
       return concat(
         of(loadMoreStart()),
         repo.getPhotos(page).pipe(
-          takeWhile(
+          filter(
             (data) =>
-              JSON.stringify(data) !==
-              JSON.stringify(state$.value.home.data[page - 1]?.data),
+              !compareData(data, state$.value.home?.data[page - 1]?.data),
           ),
           map((data) => loadMoreSuccess({data, page})),
           catchError((x) => {
@@ -68,5 +75,15 @@ const loadMoreEpic$: Epic<Action, Action, {home: HomeState}> = (
       );
     }),
   );
+
+function compareData(next: UnsplashPhoto[], old?: UnsplashPhoto[]): boolean {
+  if (!old) {
+    return false;
+  }
+  const nextIds = next.map((x) => x.id).join(',');
+  const oldIds = old.map((x) => x.id).join(',');
+  const equal = nextIds === oldIds;
+  return equal;
+}
 
 export const homeEpic = combineEpics(refreshEpic$, loadMoreEpic$);

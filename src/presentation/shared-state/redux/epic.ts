@@ -38,7 +38,7 @@ export function createEpicManager(
     epic$.pipe(
       mergeMap((epic) =>
         epic(action$, state$, dependencies).pipe(
-          // tap((x) => console.warn(x?.type)),
+          tap((x) => console.warn(x?.type)),
           catchError((err, source) => {
             console.warn(err);
             return source;

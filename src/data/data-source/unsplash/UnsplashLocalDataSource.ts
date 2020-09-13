@@ -36,7 +36,7 @@ export class AsyncStorageUnsplashDataSource implements LocalUnsplashDataSource {
         `${AsyncStorageUnsplashDataSource.KEY}/${page}`,
       );
       const cache = data ? JSON.parse(data) : {};
-      if (new Date(cache.expired) < new Date()) {
+      if (new Date(cache.expired) > new Date()) {
         observer.next(cache.photos);
       } else {
         observer.next([]);
