@@ -1,9 +1,9 @@
-import {Epic, combineEpics} from 'redux-observable';
-import {container} from 'tsyringe';
+import { Epic, combineEpics } from 'redux-observable';
+import { container } from 'tsyringe';
 
-import {of, concat} from 'rxjs';
+import { of, concat } from 'rxjs';
 
-import {filter, catchError, switchMap, map} from 'rxjs/operators';
+import { filter, catchError, switchMap, map } from 'rxjs/operators';
 
 import {
   AuthenticationEpicActions,
@@ -16,7 +16,7 @@ import {
   signInLocallySuccess,
 } from '../actions';
 
-import {SignInUseCase} from '@domain';
+import { SignInUseCase } from '@domain';
 
 const signInEpic$: Epic<AuthenticationEpicActions> = (action$) =>
   action$.pipe(
@@ -27,7 +27,7 @@ const signInEpic$: Epic<AuthenticationEpicActions> = (action$) =>
         of(signInBegin()),
         useCase.call(action.payload).pipe(
           map(signInSuccess),
-          catchError(() => of(signInSuccess())),
+          catchError(() => of(signInFailed())),
         ),
       );
     }),

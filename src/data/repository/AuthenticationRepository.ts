@@ -1,8 +1,8 @@
-import {inject, injectable} from 'tsyringe';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import { inject, injectable } from 'tsyringe';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-import {AuthenticationRepository, SignInResult} from '@domain';
+import { AuthenticationRepository, SignInResult } from '@domain';
 
 import {
   LocalAuthenticationDataSource,
@@ -17,15 +17,15 @@ export class CombineAuthenticationRepository
     private readonly localDataSource: LocalAuthenticationDataSource,
     @inject('RemoteAuthenticationDataSource')
     private readonly remoteDataSource: RemoteAuthenticationDataSource,
-  ) {}
+  ) { }
 
   signIn(credential?: any): Observable<SignInResult> {
     return this.remoteDataSource.signIn(credential).pipe(
-      map(
-        (result): SignInResult => {
-          return {fromLocal: false, token: result.data.token};
-        },
-      ),
+      map((result: any): SignInResult => {
+        console.log("-----result", result);
+
+        return { fromLocal: false, token: result.token }; // change data for free API
+      }),
     );
   }
   getToken(): Observable<string> {
