@@ -28,7 +28,7 @@ const signInEpic$: Epic = (action$) =>
         of(signInBegin()),
         useCase.call(action.payload).pipe(
           map(signInSuccess),
-          catchError(() => of(signInSuccess())),
+          catchError(() => of(signInFailed())),
         ),
       );
     }),

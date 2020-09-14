@@ -1,21 +1,21 @@
 import * as React from 'react';
-import {} from 'react-native';
+import { } from 'react-native';
 
-import {NavigationContainer} from '@react-navigation/native';
-import {useSelector, useDispatch} from 'react-redux';
-import {createNativeStackNavigator} from 'react-native-screens/native-stack';
-import {enableScreens} from 'react-native-screens';
+import { NavigationContainer } from '@react-navigation/native';
+import { useSelector, useDispatch } from 'react-redux';
+import { createNativeStackNavigator } from 'react-native-screens/native-stack';
+import { enableScreens } from 'react-native-screens';
 
-import {AuthorizedNavigator} from './AuthorizedStack';
-import {AuthenticationNavigator} from './AuthenticationStack';
-import {RootStoreState, signInLocally} from '@shared-state';
+import { AuthorizedNavigator } from './AuthorizedStack';
+import { AuthenticationNavigator } from './AuthenticationStack';
+import { RootStoreState, signInLocally } from '@shared-state';
 
 enableScreens();
 const Stack = createNativeStackNavigator();
 
 export const RootNavigator: React.FC = () => {
   const isAuthorized = useSelector(
-    ({authentication}: RootStoreState): boolean => authentication.isAuthorized,
+    ({ authentication }: RootStoreState): boolean => authentication.isAuthorized,
   );
 
   const dispatch = useDispatch();
@@ -25,6 +25,8 @@ export const RootNavigator: React.FC = () => {
   }, [dispatch]);
 
   const renderStack = () => {
+    console.log("-----isAuthorized", isAuthorized);
+
     if (isAuthorized) {
       return (
         <Stack.Screen
@@ -43,7 +45,7 @@ export const RootNavigator: React.FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        screenOptions={{headerShown: false, replaceAnimation: 'push'}}>
+        screenOptions={{ headerShown: false, replaceAnimation: 'push' }}>
         {renderStack()}
       </Stack.Navigator>
     </NavigationContainer>
