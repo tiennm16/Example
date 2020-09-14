@@ -1,36 +1,67 @@
 import React from 'react';
-import {ListRenderItemInfo} from 'react-native';
+import {SectionListRenderItemInfo} from 'react-native';
 
+import {Header} from 'react-native-elements';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
-import {ListView} from '@components';
+import {FlatButton, SectionListView} from '@components';
 import {withHotRedux} from '@hocs';
+import {UnsplashPhoto} from '@data';
 
 import {useHomeModel} from './Home.hooks';
-import {UnSplashItem} from './Home.item';
+import {UnSplashItem, UnsplashLoadingItem} from './Home.item';
 import {homeSlice} from './home.slice';
 import {homeEpic} from './home.epic';
 import {HomeProps} from './types';
 import {styles} from './Home.style';
+import {useTheme} from '@hooks';
 
 const _Home: React.FC<HomeProps> = (props) => {
   const {} = props;
-  const {doRefresh, data, refreshing} = useHomeModel();
+  const {colorScheme} = useTheme();
+  const {
+    data,
+    refreshing,
+    loadingMore,
+    doLoadMore,
+    doRefresh,
+    doSignOut,
+  } = useHomeModel();
+  const renderItem = React.useCallback(
+    ({item}: SectionListRenderItemInfo<UnsplashPhoto>) => {
+      return <UnSplashItem item={item} />;
+    },
+    [],
+  );
 
-  const renderItem = React.useCallback(({item}: ListRenderItemInfo<string>) => {
-    return <UnSplashItem item={item} />;
-  }, []);
-
-  const keyExtractor = React.useCallback((item): string => item, []);
+  const keyExtractor = React.useCallback((item: UnsplashPhoto) => item.id, []);
   return (
-    <SafeAreaView style={[styles.container]}>
-      <ListView
+    <SafeAreaView
+      edges={['bottom']}
+      style={[styles.container, {backgroundColor: colorScheme.background}]}>
+      <Header
+        backgroundColor={colorScheme.primary}
+        rightComponent={<FlatButton onPress={doSignOut} title="Sign out" />}
+      />
+      <SectionListView<UnsplashPhoto>
         contentContainerStyle={styles.listView}
-        data={data}
+        sections={data}
+        renderItem={renderItem}
         refreshing={refreshing}
         onRefresh={doRefresh}
-        renderItem={renderItem}
+        isLoadingMore={loadingMore}
+        onLoadMore={doLoadMore}
         keyExtractor={keyExtractor}
+        LoadingComponent={
+          <>
+            <UnsplashLoadingItem />
+            <UnsplashLoadingItem />
+            <UnsplashLoadingItem />
+            <UnsplashLoadingItem />
+            <UnsplashLoadingItem />
+          </>
+        }
+        windowSize={11}
       />
     </SafeAreaView>
   );

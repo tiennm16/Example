@@ -76,7 +76,7 @@ const _styles = StyleSheet.create({
   container: {},
   divider: {
     height: 1,
-    marginTop: 8,
+    // marginTop: 8,
     width: '100%',
     backgroundColor: '#F1F3F8',
   },
@@ -89,7 +89,9 @@ const _styles = StyleSheet.create({
   },
   error: {
     fontSize: 10,
-    color: "white"
+    marginTop: 4,
+    marginBottom: 4,
+    color: "#F1F3F8"
   },
   padding: { width: 16 },
 });

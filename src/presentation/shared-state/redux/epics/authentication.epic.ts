@@ -1,12 +1,10 @@
-import { Epic, combineEpics } from 'redux-observable';
-import { container } from 'tsyringe';
-
-import { of, concat } from 'rxjs';
-
-import { filter, catchError, switchMap, map } from 'rxjs/operators';
+import {Epic, combineEpics} from 'redux-observable';
+import {container} from 'tsyringe';
+import {AnyAction} from 'redux';
+import {of, concat} from 'rxjs';
+import {filter, catchError, switchMap, map} from 'rxjs/operators';
 
 import {
-  AuthenticationEpicActions,
   signInSuccess,
   signInFailed,
   signIn,
@@ -14,11 +12,14 @@ import {
   signInLocally,
   signInLocallyFailed,
   signInLocallySuccess,
+  signOut,
+  signOutSuccess,
 } from '../actions';
 
-import { SignInUseCase } from '@domain';
+import {SignInUseCase} from '@domain';
+import {RootStoreState} from '../types';
 
-const signInEpic$: Epic<AuthenticationEpicActions> = (action$) =>
+const signInEpic$: Epic = (action$) =>
   action$.pipe(
     filter(signIn.match),
     switchMap((action) => {
@@ -32,7 +33,7 @@ const signInEpic$: Epic<AuthenticationEpicActions> = (action$) =>
       );
     }),
   );
-const signInLocallyEpic$: Epic<AuthenticationEpicActions> = (action$) =>
+const signInLocallyEpic$: Epic = (action$) =>
   action$.pipe(
     filter(signInLocally.match),
     switchMap(() => {
@@ -43,4 +44,18 @@ const signInLocallyEpic$: Epic<AuthenticationEpicActions> = (action$) =>
       );
     }),
   );
-export const authenticationEpic = combineEpics(signInEpic$, signInLocallyEpic$);
+
+const signOutEpic$: Epic<AnyAction, AnyAction, RootStoreState> = (
+  action$,
+  state$,
+) =>
+  action$.pipe(
+    filter(signOut.match),
+    filter(() => state$.value.authentication.isAuthorized),
+    map(signOutSuccess),
+  );
+export const authenticationEpic = combineEpics(
+  signInEpic$,
+  signInLocallyEpic$,
+  signOutEpic$,
+);

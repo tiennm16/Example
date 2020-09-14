@@ -12,6 +12,7 @@ exports[`Test TextView render correctly 1`] = `
   <View
     style={
       Object {
+        "alignItems": "center",
         "flexDirection": "row",
       }
     }
@@ -43,7 +44,8 @@ exports[`Test TextView render correctly 1`] = `
   <Text
     style={
       Object {
-        "color": "#4f4f4f",
+        "color": "white",
+        "fontSize": 10,
       }
     }
   />

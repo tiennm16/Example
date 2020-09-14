@@ -23,61 +23,89 @@ import {
 } from '@assets';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Colors } from '@resources';
+import { Formik } from "formik";
+import * as Yup from 'yup';
 import Ripple from 'react-native-material-ripple';
+
+let SignupSchema = Yup.object().shape({
+  email: Yup.string()
+    .email('Invalid email!')
+    .required('This field is required!'),
+  password: Yup.string()
+    .required('This field is required!')
+});
 
 const _SignIn: React.FC<SignInProps> = (props) => {
   const { } = props;
   const onSignInFailed = React.useCallback(() => {
-    Alert.alert("Warning", "Email or Password is not correct!")
+    Alert.alert("Error", "Email or password is incorrect!")
   }, []);
   const { isAuthenticating, submit } = useSignIn({ onSignInFailed });
   return (
     <PrimaryBackground>
       <SafeAreaView style={{ paddingHorizontal: 40, flex: 1 }}>
-        <KeyboardAwareScrollView
-          style={{ flex: 1 }}
-          contentContainerStyle={{ justifyContent: 'center', flex: 1 }}>
-          <FullScreenLoadingIndicator visible={isAuthenticating} />
-          <TextView text="SIGN IN" style={styles.titleText} />
-          <TextField
-            prefixIcon={ICON_EMAIL}
-            // errorLabel="Lỗi"
-            containerStyle={{
-              marginBottom: 30,
-            }}
-            inputProps={{
-              style: {
-                color: Colors.WHITE,
-                fontSize: 16,
-              },
-              placeholder: 'Email',
-              placeholderTextColor: '#dedede',
-            }}
-          />
-          <TextField
-            prefixIcon={ICON_LOCK}
-            // errorLabel="Lỗi"
-            containerStyle={{
-              paddingBottom: 5,
-            }}
-            inputProps={{
-              secureTextEntry: true,
-              style: {
-                color: Colors.WHITE,
-                fontSize: 16,
-              },
-              placeholder: 'Password',
-              placeholderTextColor: '#dedede',
-            }}
-          />
-          <FlatButton
-            title="SIGN IN"
-            titleStyle={styles.btn}
-            containerStyle={styles.btnContainer}
-            onPress={submit}
-          />
-          {renderSocialAuthen()}
-        </KeyboardAwareScrollView>
+        <Formik
+          initialValues={{
+            password: 'cityslicka',
+            email: 'eve.holt@reqres.in',
+          }}
+          validationSchema={SignupSchema}
+          onSubmit={values => {
+            // same shape as initial values
+            submit(values);
+          }}
+        >
+          {({ errors, setFieldValue, submitForm, values }) => (
+            <KeyboardAwareScrollView
+              style={{ flex: 1 }}
+              contentContainerStyle={{ justifyContent: 'center', flex: 1 }}>
+              <FullScreenLoadingIndicator visible={isAuthenticating} />
+              <TextView text="SIGN IN" style={styles.titleText} />
+              <TextField
+                prefixIcon={ICON_EMAIL}
+                errorLabel={errors.email}
+                containerStyle={{
+                  marginBottom: 30,
+                }}
+                inputProps={{
+                  style: {
+                    color: Colors.WHITE,
+                    fontSize: 16,
+                  },
+                  value: values.email,
+                  onChangeText: (value: string) => { setFieldValue('email', value, false) },
+                  placeholder: 'Email',
+                  placeholderTextColor: '#dedede',
+                }}
+              />
+              <TextField
+                prefixIcon={ICON_LOCK}
+                errorLabel={errors.password}
+                containerStyle={{
+                  paddingBottom: 5,
+                }}
+                inputProps={{
+                  secureTextEntry: true,
+                  value: values.password,
+                  onChangeText: (value: string) => { setFieldValue('password', value, false) },
+                  style: {
+                    color: Colors.WHITE,
+                    fontSize: 16,
+                  },
+                  placeholder: 'Password',
+                  placeholderTextColor: '#dedede',
+                }}
+              />
+              <FlatButton
+                title="SIGN IN"
+                titleStyle={styles.btn}
+                containerStyle={styles.btnContainer}
+                onPress={submitForm}
+              />
+              {renderSocialAuthen()}
+            </KeyboardAwareScrollView>
+          )}
+        </Formik>
       </SafeAreaView>
     </PrimaryBackground>
   );

@@ -1,28 +1,85 @@
 import {Epic, combineEpics} from 'redux-observable';
-import {filter, switchMap, map, catchError} from 'rxjs/operators';
+import {
+  filter,
+  switchMap,
+  map,
+  catchError,
+  skipWhile,
+  mergeMap,
+  throttle,
+} from 'rxjs/operators';
+import {of, concat, timer} from 'rxjs';
 
-// import {refresh, refreshSuccess} from './home.action';
 import {homeSlice} from './home.slice';
 import {container} from 'tsyringe';
-import {UnsplashRepository} from '@data';
-import {of} from 'rxjs';
+import {UnsplashPhoto, UnsplashRepository} from '@data';
+import {Action} from 'redux';
+import {HomeState} from './types';
 
 const {
-  actions: {refresh, refreshSuccess, refreshFailed},
+  actions: {
+    refresh,
+    refreshSuccess,
+    refreshFailed,
+    loadMore,
+    loadMoreStart,
+    loadMoreFailed,
+    loadMoreSuccess,
+  },
 } = homeSlice;
 
-const setThemeEpic$: Epic = (action$) =>
+const refreshEpic$: Epic<Action, Action, {home: HomeState}> = (action$) =>
   action$.pipe(
     filter(refresh.match),
     switchMap(() => {
       const repo = container.resolve<UnsplashRepository>('UnsplashRepository');
       return repo.getPhotos().pipe(
-        map((data) => data.map((x) => x.urls.regular)),
+        filter((data) => data.length > 0),
         map(refreshSuccess),
-        catchError(() => of(refreshFailed())),
+        catchError((err) => {
+          console.warn(err);
+          return of(refreshFailed());
+        }),
       );
     }),
-    catchError(() => of(refreshFailed())),
   );
 
-export const homeEpic = combineEpics(setThemeEpic$);
+const loadMoreEpic$: Epic<Action, Action, {home: HomeState}> = (
+  action$,
+  state$,
+) =>
+  action$.pipe(
+    throttle(() => timer(300)),
+    skipWhile(() => state$.value.home?.loadingMore),
+    filter(loadMore.match),
+    mergeMap(() => {
+      const page = state$.value.home.data.length + 1;
+      const repo = container.resolve<UnsplashRepository>('UnsplashRepository');
+      return concat(
+        of(loadMoreStart()),
+        repo.getPhotos(page).pipe(
+          filter(
+            (data) =>
+              !compareData(data, state$.value.home?.data[page - 1]?.data),
+          ),
+          map((data) => loadMoreSuccess({data, page})),
+          catchError((x) => {
+            console.warn(x);
+            return of(loadMoreFailed());
+          }),
+        ),
+      );
+    }),
+  );
+
+function compareData(next: UnsplashPhoto[], old?: UnsplashPhoto[]): boolean {
+  if (!old) {
+    return false;
+  }
+  const nextIds = next.map((x) => x.id).join(',');
+  const oldIds = old.map((x) => x.id).join(',');
+  const equal = nextIds === oldIds;
+  return equal;
+}
+
+export const homeEpic = combineEpics(refreshEpic$, loadMoreEpic$);

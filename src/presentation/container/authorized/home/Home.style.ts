@@ -5,6 +5,7 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   listView: {
+    marginTop: 16,
     paddingHorizontal: 8,
   },
 });

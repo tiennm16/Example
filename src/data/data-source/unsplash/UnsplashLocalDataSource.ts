@@ -1,5 +1,7 @@
 import {injectable} from 'tsyringe';
 import {Observable, Observer} from 'rxjs';
+import {add} from 'date-fns';
+
 import AsyncStorage from '@react-native-community/async-storage';
 
 import {UnsplashPhoto} from '../../model';
@@ -10,22 +12,35 @@ export interface LocalUnsplashDataSource {
    *
    * @description Sign in user with phone
    */
-  getPhotos(): Observable<UnsplashPhoto[]>;
+  getPhotos(page: number): Observable<UnsplashPhoto[]>;
 
-  savePhotos(photo: UnsplashPhoto[]): void;
+  savePhotos(photo: UnsplashPhoto[], page: number): void;
 }
 
 @injectable()
 export class AsyncStorageUnsplashDataSource implements LocalUnsplashDataSource {
-  savePhotos(photo: UnsplashPhoto[]): void {
-    AsyncStorage.setItem('store', JSON.stringify(photo));
+  static KEY = 'LocalUnsplashDataSource';
+  savePhotos(photos: UnsplashPhoto[], page: number = 1): void {
+    AsyncStorage.setItem(
+      `${AsyncStorageUnsplashDataSource.KEY}/${page}`,
+      JSON.stringify({
+        expired: add(new Date(), {hours: 2}).toISOString(),
+        photos,
+      }),
+    );
   }
 
-  getPhotos(): Observable<UnsplashPhoto[]> {
+  getPhotos(page: number = 1): Observable<UnsplashPhoto[]> {
     return Observable.create(async (observer: Observer<UnsplashPhoto[]>) => {
-      const data = await AsyncStorage.getItem('store');
-      const photos = data ? JSON.parse(data) : [];
-      observer.next(photos);
+      const data = await AsyncStorage.getItem(
+        `${AsyncStorageUnsplashDataSource.KEY}/${page}`,
+      );
+      const cache = data ? JSON.parse(data) : {};
+      if (new Date(cache.expired) > new Date()) {
+        observer.next(cache.photos);
+      } else {
+        observer.next([]);
+      }
       observer.complete();
     });
   }

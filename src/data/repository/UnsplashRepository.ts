@@ -5,11 +5,11 @@ import {
   RemoteUnsplashDataSource,
   LocalUnsplashDataSource,
 } from '../data-source';
-import {tap, delay} from 'rxjs/operators';
+import {tap} from 'rxjs/operators';
 
 @injectable()
 export class UnsplashRepository {
-  static cache: UnsplashPhoto[] = [];
+  maximumCachedRequest: number = 10;
   constructor(
     @inject('RemoteUnsplashDataSource')
     private readonly dataSource: RemoteUnsplashDataSource,
@@ -17,10 +17,18 @@ export class UnsplashRepository {
     private readonly localDataSource: LocalUnsplashDataSource,
   ) {}
 
-  getPhotos(): Observable<UnsplashPhoto[]> {
+  getPhotos(page: number = 1): Observable<UnsplashPhoto[]> {
+    if (page >= this.maximumCachedRequest) {
+      return this.dataSource.getPhotos(page);
+    }
     return merge(
-      this.localDataSource.getPhotos().pipe(delay(1000)),
-      this.dataSource.getPhotos().pipe(delay(2000)),
-    ).pipe(tap((x) => this.localDataSource.savePhotos(x)));
+      this.localDataSource.getPhotos(page),
+      this.dataSource.getPhotos(page).pipe(
+        tap((x) => {
+          page < this.maximumCachedRequest &&
+            this.localDataSource.savePhotos(x, page);
+        }),
+      ),
+    );
   }
 }

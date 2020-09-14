@@ -21,6 +21,7 @@ exports[`renders correctly 1`] = `
     keyExtractor={[Function]}
     maxToRenderPerBatch={10}
     onContentSizeChange={[Function]}
+    onEndReached={[Function]}
     onEndReachedThreshold={2}
     onGestureHandlerEvent={[Function]}
     onGestureHandlerStateChange={[Function]}

@@ -8,7 +8,7 @@ import {
   EpicMiddleware,
 } from 'redux-observable';
 
-import {mergeMap, catchError} from 'rxjs/operators';
+import {mergeMap, catchError, tap} from 'rxjs/operators';
 import {RootEpicDependency, RootEpic, RootStoreState} from './types';
 
 export function createEpicManager(
@@ -38,7 +38,11 @@ export function createEpicManager(
     epic$.pipe(
       mergeMap((epic) =>
         epic(action$, state$, dependencies).pipe(
-          catchError((_, source) => source),
+          tap((x) => console.log(x?.type)),
+          catchError((err, source) => {
+            console.warn(err);
+            return source;
+          }),
         ),
       ),
     );

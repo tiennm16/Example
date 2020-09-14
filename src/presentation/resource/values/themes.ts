@@ -6,7 +6,7 @@ export const LightTheme: Theme = {
     primary: Colors.WHITE,
     secondary: Colors.PURPLE,
     onSecondary: Colors.WHITE,
-    background: Colors.WHITE,
+    background: Colors.GRAY,
     surface: Colors.PURPLE,
     error: Colors.PURPLE,
     onBackground: '#000',

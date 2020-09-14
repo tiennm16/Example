@@ -41,7 +41,7 @@ export class SignInUseCase implements UseCase<SignInResult, any> {
         return this.onRemoteSignInSuccess(result)
       }), catchError((err: any) => {
         console.log("-----er", err);
-        return this.onRemoteSignInSuccess(err)
+        return Observable.throw(err);
       }));
   }
 
