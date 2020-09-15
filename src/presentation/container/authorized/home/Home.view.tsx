@@ -17,7 +17,7 @@ import {styles} from './Home.style';
 import {useTheme} from '@hooks';
 
 const _Home: React.FC<HomeProps> = (props) => {
-  const {} = props;
+  const {navigation} = props;
   const {colorScheme} = useTheme();
   const {
     data,
@@ -27,11 +27,18 @@ const _Home: React.FC<HomeProps> = (props) => {
     doRefresh,
     doSignOut,
   } = useHomeModel();
+  const navigateToProfile = React.useCallback(
+    (item: UnsplashPhoto) => {
+      navigation.navigate('Profile', {id: item.user.username});
+    },
+    [navigation],
+  );
+
   const renderItem = React.useCallback(
     ({item}: SectionListRenderItemInfo<UnsplashPhoto>) => {
-      return <UnSplashItem item={item} />;
+      return <UnSplashItem item={item} onPress={navigateToProfile} />;
     },
-    [],
+    [navigateToProfile],
   );
 
   const keyExtractor = React.useCallback((item: UnsplashPhoto) => item.id, []);

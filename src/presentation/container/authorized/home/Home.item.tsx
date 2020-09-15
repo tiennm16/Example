@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Dimensions} from 'react-native';
+import {StyleSheet, View, Dimensions, Pressable} from 'react-native';
 
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import Image from 'react-native-fast-image';
@@ -8,11 +8,17 @@ import {UnsplashPhoto} from '@data';
 
 export type UnSplashItemProps = {
   item: UnsplashPhoto;
+  onPress?: (item: UnsplashPhoto) => void;
 };
 const _UnSplashItem: React.FC<UnSplashItemProps> = (props) => {
-  const {item} = props;
+  const {item, onPress} = props;
+
+  const onItemPress = React.useCallback(() => {
+    onPress && onPress(item);
+  }, [item, onPress]);
+
   return (
-    <View style={styles.container}>
+    <Pressable onPress={onItemPress} style={styles.container}>
       <Image style={styles.image} source={{uri: item.urls.regular}} />
       <View style={styles.overlay}>
         <View style={styles.row}>
@@ -23,7 +29,7 @@ const _UnSplashItem: React.FC<UnSplashItemProps> = (props) => {
           <View>{/* <TextView text={item.user.name} /> */}</View>
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 };
 

@@ -2,10 +2,9 @@ import {container} from 'tsyringe';
 import {
   KeyChainAuthenticationDataSource,
   ApiAuthenticationDataSource,
-  CombineAuthenticationRepository,
-  UnsplashRepository,
   ApiUnsplashDataSource,
   AsyncStorageUnsplashDataSource,
+  ApiReqresDataSource,
 } from '@data';
 import {SignInUseCase} from '@domain';
 import {
@@ -39,12 +38,8 @@ export function registerDatDependencies() {
     useClass: AsyncStorageUnsplashDataSource,
   });
 
-  container.register('AuthenticationRepository', {
-    useClass: CombineAuthenticationRepository,
-  });
-
-  container.register('UnsplashRepository', {
-    useClass: UnsplashRepository,
+  container.register('RemoteReqresDataSource', {
+    useClass: ApiReqresDataSource,
   });
 
   container.register('SignInUseCase', {

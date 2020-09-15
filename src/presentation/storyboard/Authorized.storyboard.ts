@@ -1,3 +1,4 @@
 export type AuthorizedStoryboardParamList = {
-  Home: undefined
+  Home: undefined;
+  Profile: {id: string};
 };
