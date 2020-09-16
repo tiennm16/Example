@@ -5,6 +5,9 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  listHeader: {
+    backgroundColor: 'white',
+  },
   avatar: {
     width: Dimensions.get('window').width * 0.4,
     height: Dimensions.get('window').width * 0.4,

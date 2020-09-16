@@ -26,8 +26,10 @@ export class RxUnsplashProvider implements RxRemoteProvider {
     return Observable.create(async (observer: Observer<AxiosResponse<T>>) => {
       try {
         const result = await this.axiosInstance.request(requestConfig);
-        observer.next(result);
-        observer.complete();
+        setTimeout(() => {
+          observer.next(result);
+          observer.complete();
+        }, 500);
       } catch (error) {
         observer.error(new RxUnsplashProviderException(error));
       }

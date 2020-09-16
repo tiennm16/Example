@@ -1,17 +1,22 @@
 import * as React from 'react';
 
-import {createStackNavigator} from '@react-navigation/stack';
+import {createSharedElementStackNavigator} from 'react-navigation-shared-element';
 
-import {AuthorizedStoryboardParamList} from '../storyboard/Authorized.storyboard';
 import {Home, Profile} from '@containers';
 
-const Stack = createStackNavigator<AuthorizedStoryboardParamList>();
+const Stack = createSharedElementStackNavigator();
 
 export const AuthorizedNavigator: React.FC = () => {
   return (
     <Stack.Navigator headerMode="none">
       <Stack.Screen name="Home" component={Home} />
-      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
+        sharedElements={(route) => {
+          return [`avatar-${route.params.id}`];
+        }}
+      />
     </Stack.Navigator>
   );
 };

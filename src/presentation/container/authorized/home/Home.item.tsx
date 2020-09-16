@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Dimensions, Pressable} from 'react-native';
 
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import {SharedElement} from 'react-navigation-shared-element';
 import Image from 'react-native-fast-image';
 
 import {UnsplashPhoto} from '@data';
@@ -22,10 +23,13 @@ const _UnSplashItem: React.FC<UnSplashItemProps> = (props) => {
       <Image style={styles.image} source={{uri: item.urls.regular}} />
       <View style={styles.overlay}>
         <View style={styles.row}>
-          <Image
-            source={{uri: item.user.profile_image.medium}}
-            style={styles.avatar}
-          />
+          <SharedElement id={`avatar-${item.user.username}`}>
+            <Image
+              source={{uri: item.user.profile_image.medium}}
+              style={styles.avatar}
+            />
+          </SharedElement>
+
           <View>{/* <TextView text={item.user.name} /> */}</View>
         </View>
       </View>
