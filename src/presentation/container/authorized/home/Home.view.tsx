@@ -7,6 +7,8 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {FlatButton, SectionListView} from '@components';
 import {withHotRedux} from '@hocs';
 import {UnsplashPhoto} from '@data';
+import {useThemeWithSetter} from '@hooks';
+import {ThemeConfig} from '@core';
 
 import {useHomeModel} from './Home.hooks';
 import {UnSplashItem, UnsplashLoadingItem} from './Home.item';
@@ -14,11 +16,11 @@ import {homeSlice} from './home.slice';
 import {homeEpic} from './home.epic';
 import {HomeProps} from './types';
 import {styles} from './Home.style';
-import {useTheme} from '@hooks';
 
 const _Home: React.FC<HomeProps> = (props) => {
   const {navigation} = props;
-  const {colorScheme} = useTheme();
+  const [theme, setTheme] = useThemeWithSetter();
+  const {colorScheme} = theme;
   const {
     data,
     refreshing,
@@ -27,6 +29,21 @@ const _Home: React.FC<HomeProps> = (props) => {
     doRefresh,
     doSignOut,
   } = useHomeModel();
+
+  const toggleThemeButtonTitle = React.useMemo(() => {
+    if (theme.isDark) {
+      return 'Light Theme';
+    }
+    return 'Dark Theme';
+  }, [theme]);
+
+  const toggleTheme = React.useCallback(() => {
+    if (theme.isDark) {
+      return setTheme(ThemeConfig.Light);
+    }
+    return setTheme(ThemeConfig.Dark);
+  }, [theme, setTheme]);
+
   const navigateToProfile = React.useCallback(
     (item: UnsplashPhoto) => {
       navigation.navigate('Profile', {id: item.user.username});
@@ -48,7 +65,20 @@ const _Home: React.FC<HomeProps> = (props) => {
       style={[styles.container, {backgroundColor: colorScheme.background}]}>
       <Header
         backgroundColor={colorScheme.primary}
-        rightComponent={<FlatButton onPress={doSignOut} title="Sign out" />}
+        leftComponent={
+          <FlatButton
+            onPress={doSignOut}
+            title="Sign out"
+            titleStyle={{color: colorScheme.onPrimary}}
+          />
+        }
+        rightComponent={
+          <FlatButton
+            onPress={toggleTheme}
+            title={toggleThemeButtonTitle}
+            titleStyle={{color: colorScheme.onPrimary}}
+          />
+        }
       />
       <SectionListView<UnsplashPhoto>
         contentContainerStyle={styles.listView}

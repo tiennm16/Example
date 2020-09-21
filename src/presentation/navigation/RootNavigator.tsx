@@ -9,11 +9,13 @@ import {enableScreens} from 'react-native-screens';
 import {AuthorizedNavigator} from './AuthorizedStack';
 import {AuthenticationNavigator} from './AuthenticationStack';
 import {RootStoreState, signInLocally} from '@shared-state';
+import {useThemedStatusBar} from '../hook/share-state';
 
 enableScreens();
 const Stack = createNativeStackNavigator();
 
 export const RootNavigator: React.FC = () => {
+  useThemedStatusBar();
   const isAuthorized = useSelector(
     ({authentication}: RootStoreState): boolean => authentication.isAuthorized,
   );

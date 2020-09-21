@@ -43,7 +43,7 @@ const _Profile: React.FC<ProfileProps> = (props) => {
         <Pressable onPress={navigateToFriendProfile(item)}>
           <SharedElement id={`avatar-${item.username}`}>
             <Image
-              style={styles.friendImage}
+              style={[styles.friendImage, {borderColor: colorScheme.primary}]}
               source={{uri: item.profile_image.large}}
             />
           </SharedElement>
@@ -74,7 +74,7 @@ const _Profile: React.FC<ProfileProps> = (props) => {
       );
     }
     return (
-      <View style={styles.listHeader}>
+      <View style={[styles.listHeader]}>
         <SharedElement id={`avatar-${route.params.id}`}>
           <Image style={styles.avatar} source={{uri: avatar}} />
         </SharedElement>
@@ -84,34 +84,28 @@ const _Profile: React.FC<ProfileProps> = (props) => {
   };
 
   return (
-    <SafeAreaView style={[styles.container]} edges={['bottom']}>
+    <SafeAreaView
+      style={[styles.container, {backgroundColor: colorScheme.background}]}
+      edges={['bottom']}>
       <Header
-        leftComponent={<FlatButton onPress={goBack} title="Back" />}
+        leftComponent={
+          <FlatButton
+            onPress={goBack}
+            title="Back"
+            titleStyle={{color: colorScheme.onPrimary}}
+          />
+        }
         backgroundColor={colorScheme.primary}
       />
       <ListView
         numColumns={3}
-        style={styles.listView}
+        contentContainerStyle={[styles.listView]}
         ListHeaderComponent={renderHeader()}
         refreshing={isLoadingFriend}
         showsVerticalScrollIndicator={false}
         LoadingComponent={
           <>
-            <SkeletonPlaceholder>
-              <View style={styles.row}>
-                <View style={styles.friendImage} />
-                <View style={styles.friendImage} />
-                <View style={styles.friendImage} />
-              </View>
-            </SkeletonPlaceholder>
-            <SkeletonPlaceholder>
-              <View style={styles.row}>
-                <View style={styles.friendImage} />
-                <View style={styles.friendImage} />
-                <View style={styles.friendImage} />
-              </View>
-            </SkeletonPlaceholder>
-            <SkeletonPlaceholder>
+            <SkeletonPlaceholder backgroundColor={colorScheme.background}>
               <View style={styles.row}>
                 <View style={styles.friendImage} />
                 <View style={styles.friendImage} />

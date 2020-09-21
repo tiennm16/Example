@@ -1,13 +1,16 @@
-import { injectable } from 'tsyringe';
-import { Observable, Observer } from 'rxjs';
-
+import {injectable} from 'tsyringe';
+import {from, Observable, Observer, throwError} from 'rxjs';
+import {catchError, mapTo} from 'rxjs/operators';
 import * as Keychain from 'react-native-keychain';
-import { LocalException } from '@core';
+
+import {LocalException} from '@core';
 
 export interface LocalAuthenticationDataSource {
   saveToken(username: string, token: string): Observable<boolean>;
 
   getToken(): Observable<string>;
+
+  clearToken(): Observable<boolean>;
 }
 
 @injectable()
@@ -16,8 +19,7 @@ export class KeyChainAuthenticationDataSource
   saveToken(username: string, token: string): Observable<boolean> {
     return Observable.create(async (observer: Observer<boolean>) => {
       try {
-        let localToken = await Keychain.setGenericPassword(username, token);
-        console.log("-----localToken", localToken);
+        await Keychain.setGenericPassword(username, token);
         observer.next(true);
         observer.complete();
       } catch (error) {
@@ -39,5 +41,12 @@ export class KeyChainAuthenticationDataSource
         observer.error(new LocalException(error));
       }
     });
+  }
+
+  clearToken(): Observable<boolean> {
+    return from(Keychain.resetGenericPassword()).pipe(
+      mapTo(true),
+      catchError((err) => throwError(new LocalException(err))),
+    );
   }
 }

@@ -29,7 +29,5 @@ const styles = StyleSheet.create({
   title: {
     color: LightTheme.colorScheme.primary,
   },
-  content: {
-    fontSize: 8,
-  },
+  content: {},
 });

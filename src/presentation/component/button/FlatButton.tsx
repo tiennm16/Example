@@ -1,5 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, TextProps, StyleProp, ViewStyle, TextStyle } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TextProps,
+  StyleProp,
+  ViewStyle,
+  TextStyle,
+} from 'react-native';
 
 import Ripple from 'react-native-material-ripple';
 
@@ -11,7 +18,7 @@ export interface FlatButtonProps extends TextProps {
 }
 
 const _FlatButton: React.FC<FlatButtonProps> = (props) => {
-  const { title, onPress, titleStyle } = props;
+  const {title, onPress, titleStyle} = props;
   return (
     <Ripple
       onPress={onPress}

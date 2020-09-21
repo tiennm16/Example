@@ -23,4 +23,9 @@ export interface AuthenticationRepository {
    * @returns boolean variable to indicate that success or failure
    */
   saveToken(key: string, token: string): Observable<boolean>;
+
+  /**
+   *
+   */
+  signOut(): Observable<boolean>;
 }

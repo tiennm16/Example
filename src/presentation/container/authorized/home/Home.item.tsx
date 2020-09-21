@@ -6,12 +6,14 @@ import {SharedElement} from 'react-navigation-shared-element';
 import Image from 'react-native-fast-image';
 
 import {UnsplashPhoto} from '@data';
+import {useTheme} from '@hooks';
 
 export type UnSplashItemProps = {
   item: UnsplashPhoto;
   onPress?: (item: UnsplashPhoto) => void;
 };
 const _UnSplashItem: React.FC<UnSplashItemProps> = (props) => {
+  const {colorScheme} = useTheme();
   const {item, onPress} = props;
 
   const onItemPress = React.useCallback(() => {
@@ -20,13 +22,13 @@ const _UnSplashItem: React.FC<UnSplashItemProps> = (props) => {
 
   return (
     <Pressable onPress={onItemPress} style={styles.container}>
-      <Image style={styles.image} source={{uri: item.urls.regular}} />
+      <Image style={[styles.image]} source={{uri: item.urls.regular}} />
       <View style={styles.overlay}>
         <View style={styles.row}>
           <SharedElement id={`avatar-${item.user.username}`}>
             <Image
               source={{uri: item.user.profile_image.medium}}
-              style={styles.avatar}
+              style={[styles.avatar, {borderColor: colorScheme.primary}]}
             />
           </SharedElement>
 

@@ -9,7 +9,7 @@ export type ConfigurationState = {
 };
 
 const INITIAL_STATE: ConfigurationState = {
-  themeConfig: ThemeConfig.System,
+  themeConfig: ThemeConfig.Dark,
 };
 
 export const configurationReducer = createReducer(INITIAL_STATE, (builder) =>

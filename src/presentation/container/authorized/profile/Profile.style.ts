@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   listHeader: {
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
   },
   avatar: {
     width: Dimensions.get('window').width * 0.4,
@@ -22,9 +22,7 @@ export const styles = StyleSheet.create({
   friendImage: {
     width: Dimensions.get('window').width / 3,
     height: Dimensions.get('window').width / 3,
-
     borderWidth: 2,
-    borderColor: 'white',
   },
   row: {
     flexDirection: 'row',

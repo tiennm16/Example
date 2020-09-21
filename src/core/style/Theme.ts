@@ -8,6 +8,7 @@ export enum ThemeConfig {
 }
 
 export interface Theme {
+  isDark: boolean,
   textTheme?: TextTheme;
   colorScheme: ColorScheme;
 }

@@ -31,7 +31,12 @@ export class CombineAuthenticationRepository
   getToken(): Observable<string> {
     return this.localDataSource.getToken();
   }
+
   saveToken(key: string, token: string): Observable<boolean> {
     return this.localDataSource.saveToken(key, token);
+  }
+
+  signOut(): Observable<boolean> {
+    return this.localDataSource.clearToken();
   }
 }

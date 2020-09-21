@@ -1,3 +1,4 @@
+import {useTheme} from '@hooks';
 import React from 'react';
 import {
   View,
@@ -21,6 +22,7 @@ export interface SectionListViewProps<ItemT> extends SectionListProps<ItemT> {
 export const SectionListView = <T extends any>(
   props: SectionListViewProps<T>,
 ) => {
+  const {colorScheme} = useTheme();
   const {
     refreshing,
     ListFooterComponent,
@@ -75,6 +77,7 @@ export const SectionListView = <T extends any>(
           <RefreshControl
             refreshing={refreshIndicatorVisible}
             onRefresh={props.onRefresh}
+            tintColor={colorScheme.onBackground}
           />
         }
         style={styles.list}

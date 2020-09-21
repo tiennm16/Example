@@ -14,9 +14,10 @@ import {
   signInLocallySuccess,
   signOut,
   signOutSuccess,
+  signOutFailed,
 } from '../actions';
 
-import {SignInUseCase} from '@domain';
+import {SignInUseCase, SignOutUseCase} from '@domain';
 import {RootStoreState} from '../types';
 
 const signInEpic$: Epic = (action$) =>
@@ -52,7 +53,13 @@ const signOutEpic$: Epic<AnyAction, AnyAction, RootStoreState> = (
   action$.pipe(
     filter(signOut.match),
     filter(() => state$.value.authentication.isAuthorized),
-    map(signOutSuccess),
+    switchMap(() => {
+      const useCase = container.resolve<SignOutUseCase>('SignOutUseCase');
+      return useCase.call().pipe(
+        map(signOutSuccess),
+        catchError(() => of(signOutFailed())),
+      );
+    }),
   );
 export const authenticationEpic = combineEpics(
   signInEpic$,

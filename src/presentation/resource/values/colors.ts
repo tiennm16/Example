@@ -6,4 +6,6 @@ export const Colors = {
   LIGHT_PINK: '#ee4e9b26',
   PINK: '#ee4e9b96',
   LIGHT_ORANGE: '#d06767d6',
+  GREY: 'rgba(45, 53, 64, 1)',
+  BLACK: '#000000',
 };

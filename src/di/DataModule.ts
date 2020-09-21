@@ -13,7 +13,7 @@ import {
   RxUnsplashProvider,
 } from '@core';
 
-export function registerDatDependencies() {
+export function registerDataDependencies() {
   container.register('ApiProvider', {
     useValue: new BearerAuthorizationRxAxiosProvider({
       baseURL: BuildConfig.ApiUrl,
