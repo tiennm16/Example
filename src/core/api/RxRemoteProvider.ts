@@ -45,8 +45,7 @@ export interface RxRemoteProvider {
 
 export class RxAxiosProviderException extends RemoteException<AxiosError> {}
 
-export class BearerAuthorizationRxAxiosProvider<Result = any>
-  implements RxRemoteProvider {
+export class BearerAuthorizationRxAxiosProvider implements RxRemoteProvider {
   private readonly axiosInstance: AxiosInstance;
 
   private token?: string;
@@ -92,5 +91,11 @@ export class BearerAuthorizationRxAxiosProvider<Result = any>
       method: 'DELETE',
       url,
     });
+  }
+}
+
+export class OAuth2RxProvider extends BearerAuthorizationRxAxiosProvider {
+  request<T>(requestConfig: AxiosRequestConfig): Observable<AxiosResponse<T>> {
+    
   }
 }

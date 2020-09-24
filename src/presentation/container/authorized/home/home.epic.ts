@@ -5,8 +5,8 @@ import {
   map,
   catchError,
   skipWhile,
-  mergeMap,
   throttle,
+  concatMap,
 } from 'rxjs/operators';
 import {of, concat, timer} from 'rxjs';
 
@@ -52,7 +52,7 @@ const loadMoreEpic$: Epic<Action, Action, {home: HomeState}> = (
     throttle(() => timer(300)),
     skipWhile(() => state$.value.home?.loadingMore),
     filter(loadMore.match),
-    mergeMap(() => {
+    concatMap(() => {
       const page = state$.value.home.data.length + 1;
       const repo = container.resolve<UnsplashRepository>('UnsplashRepository');
       return concat(

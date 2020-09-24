@@ -11,7 +11,9 @@ export class SignInUseCase implements UseCase<SignInResult, any> {
   constructor(
     @inject('AuthenticationRepository')
     private readonly authenticationRepository: AuthenticationRepository,
-  ) {}
+  ) {
+    this.onRemoteSignInSuccess = this.onRemoteSignInSuccess.bind(this);
+  }
 
   call(param?: any): Observable<SignInResult> {
     if (typeof param === 'undefined') {

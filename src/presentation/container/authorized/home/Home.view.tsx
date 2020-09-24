@@ -1,5 +1,5 @@
 import React from 'react';
-import {SectionListRenderItemInfo} from 'react-native';
+import {Platform, SectionListRenderItemInfo} from 'react-native';
 
 import {Header} from 'react-native-elements';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -98,7 +98,7 @@ const _Home: React.FC<HomeProps> = (props) => {
             <UnsplashLoadingItem />
           </>
         }
-        windowSize={11}
+        removeClippedSubviews={Platform.OS === 'android'}
       />
     </SafeAreaView>
   );
