@@ -23,8 +23,6 @@ export const PickerItem: React.FC<PickerItemProps> = (props) => {
         onPress={onCheckBoxPress}
         containerStyle={styles.checkBoxContainer}
         title={item.title}
-        checkedIcon="dot-circle-o"
-        uncheckedIcon="circle-o"
         checked={checked}
       />
     </View>

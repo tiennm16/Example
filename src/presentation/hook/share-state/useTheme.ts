@@ -34,7 +34,9 @@ export function useTheme() {
 export function useThemedStatusBar() {
   const theme = useTheme();
   React.useEffect(() => {
-    Platform.OS === 'android' && StatusBar.setBackgroundColor('transparent');
+    if (Platform.OS === 'android') {
+      StatusBar.setBackgroundColor('transparent');
+    }
     if (theme.isDark) {
       StatusBar.setBarStyle('light-content');
       return;
